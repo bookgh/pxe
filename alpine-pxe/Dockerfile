@@ -23,7 +23,7 @@ ENV TEMP_SYSLINUX_PATH /tmp/syslinux-"$SYSLINUX_VERSION"
 WORKDIR /tmp
 RUN \
   mkdir -p "$TEMP_SYSLINUX_PATH" \
-  && wget -SL https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-"$SYSLINUX_VERSION".tar.gz \
+  && wget https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-"$SYSLINUX_VERSION".tar.gz \
   && tar -xzf syslinux-"$SYSLINUX_VERSION".tar.gz \
   && mkdir -p /var/lib/tftpboot \
   && cp "$TEMP_SYSLINUX_PATH"/bios/core/pxelinux.0 /var/lib/tftpboot/ \
