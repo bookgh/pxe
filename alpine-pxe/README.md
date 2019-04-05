@@ -45,7 +45,7 @@
 
     cp -a /mnt /data/centos7.6
 
-> 复制启动文件到 ftp 目录
+> 添加引导菜单
 
     docker exec -it pxe add-image centos7.6                       # 使用本地源手动安装
     
