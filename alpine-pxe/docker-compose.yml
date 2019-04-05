@@ -1,0 +1,13 @@
+version: '3'
+services:
+  pxe:
+    network_mode: host
+    # image: pxe:1.0
+    image: bookgh/pxe:alpine
+    container_name: pxe
+    hostname: pxe.pxe.local
+    restart: always
+    environment:
+      IP: 192.168.0.71
+    volumes:
+      - /data:/var/lib/tftpboot/image

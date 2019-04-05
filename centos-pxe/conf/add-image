@@ -1,0 +1,32 @@
+#!/bin/bash
+
+PXE_FILE(){
+    if [ -d "/var/pxe/$1" ];then
+        NUM=$(cat /var/lib/tftpboot/num)
+        mkdir /var/lib/tftpboot/$1
+        cp /var/pxe/$1/images/pxeboot/vmlinuz /var/lib/tftpboot/$1
+        cp /var/pxe/$1/images/pxeboot/initrd.img /var/lib/tftpboot/$1
+        echo -e "\nlabel $NUM" >> /var/lib/tftpboot/pxelinux.cfg/default
+        echo "    menu label ^$NUM) Install $1" >> /var/lib/tftpboot/pxelinux.cfg/default
+        echo "    kernel $1/vmlinuz" >> /var/lib/tftpboot/pxelinux.cfg/default
+        echo "    append initrd=$1/initrd.img ks=http://192.168.0.71/${2} devfs=nomount net.ifnames=0 biosdevname=0" >> /var/lib/tftpboot/pxelinux.cfg/default
+        chown apache:apache /var/pxe/${2}
+        let NUM+=1
+        echo $NUM > /var/lib/tftpboot/num
+    else
+        echo '输入的参数不正确.'
+        rm -f /var/pxe/${2}
+        exit 2
+    fi
+}
+
+if [ $# -eq 1 ];then
+    cp /opt/centos.cfg /var/pxe/${1}.cfg
+    PXE_FILE $1 ${1}.cfg
+    sed -i "s#DIR#$1#" /var/pxe/${1}.cfg
+    sed -i "s#HTTP_SERVER#$IP#" /var/pxe/${1}.cfg
+elif [ $# -eq 2 ];then
+    PXE_FILE $1 $2
+else
+    echo '参数个数错误'
+fi

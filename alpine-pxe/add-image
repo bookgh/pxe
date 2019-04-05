@@ -1,0 +1,32 @@
+#!/bin/sh
+
+Image="$1"
+Ks="$2"
+
+[ -d "/var/lib/tftpboot/image/$Image" ] || exit 1
+
+File='/var/lib/tftpboot/num'
+[ ! -f "$File" ] && echo 1 > $File
+Num=$(cat "$File")
+
+if [ "$Ks" ];then
+    Cmd="ks=http://$IP/image/$Ks"
+    [ -f "/var/lib/tftpboot/image/$Ks" ] || exit 2
+    chown nginx:nginx /var/lib/tftpboot/image/$Ks
+    sed -i "s#IP#$IP#" /var/lib/tftpboot/image/$Ks
+    sed -i "s#Image#$Image#" /var/lib/tftpboot/image/$Ks
+else
+    Cmd="method=http://$IP/image/$Image"
+fi
+
+# add menu
+cat >> /var/lib/tftpboot/pxelinux.cfg/additional_menu_entries <<EOF
+
+LABEL $Num
+    menu label ^$Num) Install $Image
+    kernel /image/$Image/images/pxeboot/vmlinuz
+    append initrd=/image/$Image/images/pxeboot/initrd.img $Cmd devfs=nomount net.ifnames=0 biosdevname=0
+EOF
+
+let Num+=1
+echo $Num > $File

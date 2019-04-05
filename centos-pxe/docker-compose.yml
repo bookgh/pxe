@@ -1,0 +1,15 @@
+version: '3'
+services:
+  pxe:
+    network_mode: host
+    # image: pxe:1.0
+    image: bookgh/pxe:centos
+    container_name: pxe
+    hostname: pxe.pxe.local
+    restart: always
+    environment:
+      IP: 192.168.0.71
+      DHCP_RANGE: '192.168.0.100 192.168.0.200'
+    volumes:
+      - /pxe/image:/var/pxe
+      - /pxe/tftpboot:/var/lib/tftpboot
