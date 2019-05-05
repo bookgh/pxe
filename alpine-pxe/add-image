@@ -13,8 +13,8 @@ if [ "$Ks" ];then
     Cmd="ks=http://$IP/image/$Ks"
     [ -f "/var/lib/tftpboot/image/$Ks" ] || exit 2
     chown nginx:nginx /var/lib/tftpboot/image/$Ks
-    sed -i "s#IP#$IP#" /var/lib/tftpboot/image/$Ks
-    sed -i "s#Image#$Image#" /var/lib/tftpboot/image/$Ks
+    sed -i "s#DIR#$1#" /var/lib/tftpboot/image/$Ks
+    sed -i "s#HTTP_SERVER#$IP#" /var/lib/tftpboot/image/$Ks
 else
     Cmd="method=http://$IP/image/$Image"
 fi
